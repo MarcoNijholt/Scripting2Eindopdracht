@@ -9,8 +9,9 @@ print('Content-type: text/html')
 print()
 os.environ[ 'HOME' ] = 'G:/User Storage/PycharmProjects/Scripting 2 Eindopdracht/Management/cgi'
 import matplotlib
-import pylab
 matplotlib.use('Agg')
+import pylab as plt
+
 
 with open("navbar.html", "r") as f:
     print(f.read())
@@ -40,10 +41,10 @@ for x in servers:
     cpuData = []
     for x2 in c.fetchall():
         cpuData.append(x2['cpuUssage'])
-    pylab.figure()
-    pylab.plot(cpuData)
-    pylab.ylabel('CPU ussage')
-    pylab.savefig("img/cpu_"+hostnameFileSafe+".png", transparent=True)
+    plt.figure()
+    plt.plot(cpuData)
+    plt.ylabel('CPU ussage')
+    plt.savefig("img/cpu_"+hostnameFileSafe+".png", transparent=True)
 
     print('</p>')
     print('</div>')

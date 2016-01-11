@@ -6,6 +6,7 @@ import datetime
 import time
 
 conn = sqlite3.connect('networkmonitoring.db')
+conn.row_factory = sqlite3.Row
 c = conn.cursor()
 
 # c.execute('''CREATE TABLE servers
@@ -14,10 +15,17 @@ c = conn.cursor()
 # c.execute('''CREATE TABLE historicalData
 #              (id INTEGER PRIMARY KEY, timestamp TEXT, hostname TEXT, os TEXT, diskFree TEXT, diskSize TEXT, uptime TEXT, ips TEXT, memFree TEXT, memTotal TEXT, proccount TEXT, cpuUssage TEXT)''')
 
+serverList = []
+c.execute('SELECT * FROM servers')
+for x in c.fetchall():
+    serverList.append({"hostname": x['hostname'], "port": int(x["port"])})
 
-hostname = "158.69.158.236"
-port = 8888
-request = "getAll"
+
+for server in serverList:
+
+    hostname = "158.69.158.236"
+    port = 8888
+    request = "getAll"
 
 def getCounters(hostname, port, request):
     # Create a TCP/IP socket
@@ -66,10 +74,16 @@ def getCounters(hostname, port, request):
     else:
         return countersResponse
 
+
 try:
     while 1:
-        print(getCounters(hostname, port, request))
-        time.sleep(1)
+        for server in serverList:
+            hostname = server['hostname']
+            port = server['port']
+            request = "getAll"
+            print(getCounters(hostname, port, request))
+            time.sleep(2)
+        time.sleep(30)
 except KeyboardInterrupt:
     pass
 
