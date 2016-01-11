@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+	<serverConfig>
+		<hostName>0.0.0.0</hostName>
+		<port>8888</port>
+		<authToken>theoneandonlytoken</authToken>
+	</serverConfig>
