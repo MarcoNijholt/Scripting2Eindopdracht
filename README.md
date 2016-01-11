@@ -43,5 +43,31 @@ Management beschikt over de volgende bestanden:
     - pip3.exe install matplotlib
     - pip3.exe install pyplot
     - pip3.exe install netifaces
+
+
 Nu kan je in vervolgd de python bestanden management.py voor de management server, of agent.py voor de agent servers draaien.
 Om een agent toe te voegen zal die moeten worden toegevoegd aan de database. Dit kan via de insertServer.py file, verwijderen kan via removeServer.py in de management folder.
+
+### Linux
+## LINUX ##
+Voer de volgende commandos uit om het op linux (debian/ubuntu) te installeren
+- apt-get update
+- apt-get upgrade
+- apt-get install python3 python3-pip git-core python3-matplotlib apache2-mod-php5
+- pip3 install netifaces
+- pip3 install psutil
+- git clone https://github.com/MarcoNijholt/Scripting2Eindopdracht
+- Om er voor te zorgen dat apache ook de python files executeerd zal de default sites-enabled bestand moeten worden aangepast
+- In /etc/apache2/sites-enabled/ zal 000-default.conf moeten worden aangepast. De volgende aanpassing zal moeten worden doorgevoerd
+```bash
+<Directory /var/www/Scripting2Eindopdracht/Management/cgi>
+    Options +ExecCGI
+    DirectoryIndex index.py
+</Directory>
+AddHandler cgi-script .py
+DocumentRoot  /var/www/Scripting2Eindopdracht/Management/cgi
+```
+- Hierbij moet de directory /var/www/Scripting2Eindopdracht/Management/cgi eventueel aangepast worden naar de directory van waar u het script geplaatst heeft.
+
+Nu kan je de python bestanden management.py voor de management server, of agent.py voor de agent servers draaien.
+Om een agent toe te voegen zal die moeten worden toegevoegd aan de database. Dit kan via de insertServer.py file.
