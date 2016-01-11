@@ -49,7 +49,6 @@ Nu kan je in vervolgd de python bestanden management.py voor de management serve
 Om een agent toe te voegen zal die moeten worden toegevoegd aan de database. Dit kan via de insertServer.py file, verwijderen kan via removeServer.py in de management folder.
 
 ### Linux
-## LINUX ##
 Voer de volgende commandos uit om het op linux (debian/ubuntu) te installeren
 - apt-get update
 - apt-get upgrade
