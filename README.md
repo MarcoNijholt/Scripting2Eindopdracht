@@ -17,6 +17,7 @@ Management beschikt over de volgende bestanden:
 -   cgi/footer.html (Statische HTML voor het uiterlijk van de web pagina en wat JQUERY scripts)
 -   cgi/navbar.html (Statische HTML voor het uiterlijk van de web pagina)
 
+## Management
 LINUX
 Install:
 
