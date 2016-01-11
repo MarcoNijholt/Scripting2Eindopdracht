@@ -4,28 +4,24 @@ import json
 import sqlite3
 import datetime
 import time
+import logging
+logging.basicConfig(filename='management.log',level=logging.DEBUG)
 
 conn = sqlite3.connect('networkmonitoring.db')
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
 
-# c.execute('''CREATE TABLE servers
-#              (id INTEGER PRIMARY KEY, hostname TEXT, port TEXT)''')
-#
-# c.execute('''CREATE TABLE historicalData
-#              (id INTEGER PRIMARY KEY, timestamp TEXT, hostname TEXT, os TEXT, diskFree TEXT, diskSize TEXT, uptime TEXT, ips TEXT, memFree TEXT, memTotal TEXT, proccount TEXT, cpuUssage TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS servers
+             (id INTEGER PRIMARY KEY, hostname TEXT, port TEXT)''')
+
+c.execute('''CREATE TABLE IF NOT EXISTS historicalData
+             (id INTEGER PRIMARY KEY, timestamp TEXT, hostname TEXT, os TEXT, diskFree TEXT, diskSize TEXT, uptime TEXT, ips TEXT, memFree TEXT, memTotal TEXT, proccount TEXT, cpuUssage TEXT)''')
 
 serverList = []
 c.execute('SELECT * FROM servers')
 for x in c.fetchall():
     serverList.append({"hostname": x['hostname'], "port": int(x["port"])})
 
-
-for server in serverList:
-
-    hostname = "158.69.158.236"
-    port = 8888
-    request = "getAll"
 
 def getCounters(hostname, port, request):
     # Create a TCP/IP socket
@@ -35,6 +31,7 @@ def getCounters(hostname, port, request):
     try:
         sock.connect(server_address)
     except:
+        logging.warning(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " Could not connect to agent: " + server_address[0]+":"+str(server_address[1]))
         return {"success": False, "response": "Could not connect to agent"}
 
     try:
@@ -55,6 +52,7 @@ def getCounters(hostname, port, request):
         countersResponse = json.loads(response)
     except:
         countersResponse = {"success": False, "response": "Could not parse server response, unable to get counters"}
+        logging.warning(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " Could not parse server response, unable to get counters")
 
     # print(countersResponse)
     if countersResponse['success']:
@@ -69,6 +67,7 @@ def getCounters(hostname, port, request):
             conn.commit()
             return {"success": True, "response": "Data has been inserted into the database", "countersData": countersResponse['response']}
         except:
+            logging.critical(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") + " Failed to enter the the data into the database")
             return {"success": False, "response": "Failed to enter the the data into the database"}
 
     else:

@@ -7,6 +7,8 @@ from datetime import timedelta
 import netifaces as ni
 import psutil
 import xml.etree.ElementTree as ET
+import logging
+logging.basicConfig(filename='agent.log',level=logging.DEBUG)
 
 # get config
 tree = ET.parse('config.xml')
@@ -42,12 +44,14 @@ class ServerAgent(asyncio.Protocol):
             message = data.decode("utf-8")
         except UnicodeDecodeError:
             # if for example telnet opens to this port, it will throw this error
+            logging.warning("Received a connection with an unsported protocol for exampole telnet from: " + self.transport.get_extra_info('peername'))
             self.transport.close()
             return
         # Removes line endings for clients using putty etc... (Mainly for testing)
         message = message.replace("\r", "")
         message = message.replace("\n", "")
         # Prints received data in console
+        logging.info("Received request: " + message)
         print('Data received: {!r}'.format(message))
         try:
             # Parse message to JSON object
@@ -60,28 +64,26 @@ class ServerAgent(asyncio.Protocol):
         else:
             # We need a request before knowing what to do, checking if we got that...
             if "token" not in jsonMessage.keys():
+                logging.warning("Missing authentication token from client: " + self.transport.get_extra_info('peername'))
                 self.transport.write('{"success": false, "response": "Missing authentication token in JSON"}\n'.encode("utf-8"))
             elif jsonMessage['token'] == authToken:
                 if "request" not in jsonMessage.keys():
                     self.transport.write('{"success": false, "response": "Missing request in JSON"}\n'.encode("utf-8"))
+                    logging.warning("Missing request field in json from: " + self.transport.get_extra_info('peername'))
                 else:
                     if jsonMessage['request'] == "getAll":
                         # do stuff to collect counters and parse them to json and send
                         self.getAll()
                     elif jsonMessage['request'] == "multiple":
-                        # find the array with which counters we should send
-                        pass
-                    elif jsonMessage['request'] == "specific":
-                        # just read a specific counter out...
-                        pass
-                    elif jsonMessage['request'] == "specific":
-                        pass
+                        # This is an example call that could easily be added
+                        # find the array with which counters we should send for example
+                        self.transport.write('{"success": false, "response": "This request is not yet supported"}\n'.encode("utf-8"))
                     else:
                         self.transport.write('{"success": false, "response": "Invalid request"}\n'.encode("utf-8"))
-
+                        logging.warning("Received a invalid request from: " + self.transport.get_extra_info('peername'))
             else:
                 self.transport.write('{"success": false, "response": "Authentication token is incorrect, access denied."}\n'.encode("utf-8"))
-
+                logging.warning("Invalid authentication token from: " + self.transport.get_extra_info('peername'))
 
 
     def getPowershell(self):
@@ -162,16 +164,13 @@ class ServerAgent(asyncio.Protocol):
         else:
             self.transport.write('{"success": false, "response": "This request is not supported on this OS"}\n'.encode("utf-8"))
 
-
-
-
-
 loop = asyncio.get_event_loop()
 # Each client connection will a new instance of class ServerAgent, this will allow multiple clients at the same time
 try:
     coro = loop.create_server(ServerAgent, bindAddress, bindPort)
 except:
     print("could not start server, port in use")
+    logging.critical("COULD NOT START SERVER, PORT 8888 IN USE. PLEASE CLOSE DOWN ANY PROGRAMS THAT MIGHT USE THIS PORT")
     quit()
 server = loop.run_until_complete(coro)
 
