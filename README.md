@@ -72,4 +72,4 @@ Nu kan je de python bestanden management.py voor de management server, of agent.
 Om een agent toe te voegen zal die moeten worden toegevoegd aan de database. Dit kan via de insertServer.py file.
 
 ### Overzicht accociaties
-![alt tag](http://imgur.com/N384z6R)
+![alt tag](https://raw.githubusercontent.com/MarcoNijholt/Scripting2Eindopdracht/master/INSTALL/accociaties.png)
