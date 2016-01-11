@@ -26,10 +26,22 @@ Management beschikt over de volgende bestanden:
 -   config.xml (De agent config is hierin opgeslagen, hier wordt de authenticatie token, server poort en address in gedefinieerd)
 -   windowsCounters.ps1 (In het geval van een windows systeem zal deze door agent.py worden uitgevoerd voor de performance counters)
 
+## How to install
 
-LINUX
-Install:
-
-apt-get install python3 python3-pip
-pip3 install netifaces
-pip3 install psutil
+### Windows
+- Check voor de laatste versie op: https://github.com/MarcoNijholt/Scripting2Eindopdracht en download als ZIP.
+- Pak de zip uit op de gewenste locatie
+- Installeer XAMPP: https://www.apachefriends.org/xampp-files/5.6.15/xampp-win32-5.6.15-1-VC11-installer.exe
+- Na het installeren van xampp moet de configuratie aangepast worden voor Apache zodat deze python files als cgi uitvoert.
+- vervang de huidige directory "G:/User Storage/PycharmProjects/Scripting 2 Eindopdracht/Management/cgi" door het juiste pad van waar u het project installeert in de httpd.conf file in de INSTALL directory van dit project.
+- Kopieer de httpd.conf file vervolgens naar de XAMPP appache directory. (Standaard "C:\xampp\apache\conf")
+- Installeer Python 3.4: https://www.python.org/downloads/release/python-344/
+- Open command prompt en ga naar de python scripts folder. (Standaard C:\Python34\Scripts)
+- Voer de volgende commando's uit voor het installeren van modules:
+    - pip3.exe install asyncio
+    - pip3.exe install psutil
+    - pip3.exe install matplotlib
+    - pip3.exe install pyplot
+    - pip3.exe install netifaces
+Nu kan je in vervolgd de python bestanden management.py voor de management server, of agent.py voor de agent servers draaien.
+Om een agent toe te voegen zal die moeten worden toegevoegd aan de database. Dit kan via de insertServer.py file, verwijderen kan via removeServer.py in de management folder.
