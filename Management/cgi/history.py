@@ -16,7 +16,7 @@ c = conn.cursor()
 
 print('<table class="table table-hover">')
 print('<tr><th>ID</th><th>timestamp</th><th>host</th><th>os</th><th>diskfree</th><th>disksize</th><th>uptime</th><th>ips</th><th>memfree</th><th>memtotal</th><th>proc count</th><th>cpu ussage</th></tr>')
-c.execute('SELECT * FROM historicalData order by id desc limit 500')
+c.execute('SELECT * FROM historicalData order by id desc limit 1000')
 
 
 
