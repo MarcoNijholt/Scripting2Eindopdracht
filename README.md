@@ -11,13 +11,22 @@ Management beschikt over de volgende bestanden:
 -   networkmonitoring.db (de sqlite db)
 -   removeServer.py (Hiermee kunnen agents uit de DB worden verwijderd)
 -   insertServer.py (Hiermee kunnen agents in de DB worden toegevoegd)
+-   management.log (Log messages van management.py worden hierin opgeslagen)
 -   cgi/csvreader.py (De web pagina welke de data uit sqlite omzet naar CSV)
 -   cgi/history.py (Laat de laatste 1000 entries zien door het managementscript)
 -   cgi/index.py (Leest alle counters uit voor alle agents en laat dit op verschillende manieren zien)
 -   cgi/footer.html (Statische HTML voor het uiterlijk van de web pagina en wat JQUERY scripts)
 -   cgi/navbar.html (Statische HTML voor het uiterlijk van de web pagina)
 
-## Management
+
+## Agent
+
+-   agent.py (de agent service welke een socket server opent voor TCP verbindingen, vraagt de counters op uit het systeem)
+-   agent.log (Log messages gegenereerd door agent.py worden hierin opgeslagen)
+-   config.xml (De agent config is hierin opgeslagen, hier wordt de authenticatie token, server poort en address in gedefinieerd)
+-   windowsCounters.ps1 (In het geval van een windows systeem zal deze door agent.py worden uitgevoerd voor de performance counters)
+
+
 LINUX
 Install:
 
