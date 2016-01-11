@@ -10,12 +10,14 @@ conn = sqlite3.connect('networkmonitoring.db')
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
 
+# if table doesnt exist (db removed)
 c.execute('''CREATE TABLE IF NOT EXISTS servers
              (id INTEGER PRIMARY KEY, hostname TEXT, port TEXT)''')
 
 c.execute('''CREATE TABLE IF NOT EXISTS historicalData
              (id INTEGER PRIMARY KEY, timestamp TEXT, hostname TEXT, os TEXT, diskFree TEXT, diskSize TEXT, uptime TEXT, ips TEXT, memFree TEXT, memTotal TEXT, proccount TEXT, cpuUssage TEXT)''')
 
+# get the servers we need to poll from DB
 serverList = []
 c.execute('SELECT * FROM servers')
 for x in c.fetchall():
@@ -74,13 +76,14 @@ def getCounters(hostname, port, request):
 
 
 try:
+    # loop untill the user cancels it
     while 1:
         for server in serverList:
             hostname = server['hostname']
             port = server['port']
             request = "getAll"
             print(getCounters(hostname, port, request))
-            time.sleep(2)
+            time.sleep(1)
         time.sleep(60)
 except KeyboardInterrupt:
     pass

@@ -38,7 +38,6 @@ class ServerAgent(asyncio.Protocol):
         The argument is a bytes object.
         """
 
-
         global authToken
         try:
             message = data.decode("utf-8")
@@ -164,6 +163,7 @@ class ServerAgent(asyncio.Protocol):
         else:
             self.transport.write('{"success": false, "response": "This request is not supported on this OS"}\n'.encode("utf-8"))
 
+# create a asynchronous loop
 loop = asyncio.get_event_loop()
 # Each client connection will a new instance of class ServerAgent, this will allow multiple clients at the same time
 try:
