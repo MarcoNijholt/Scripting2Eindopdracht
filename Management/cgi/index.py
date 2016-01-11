@@ -1,11 +1,16 @@
 #!C:\Python34\python.exe
-import sqlite3
 import cgitb
 cgitb.enable()
+import os
+import cgi
+import sqlite3
 print('Status: 200 OK')
 print('Content-type: text/html')
 print()
-
+os.environ[ 'HOME' ] = 'G:/User Storage/PycharmProjects/Scripting 2 Eindopdracht/Management/cgi'
+import matplotlib
+import pylab
+matplotlib.use('Agg')
 
 with open("navbar.html", "r") as f:
     print(f.read())
@@ -25,25 +30,26 @@ print('<h3>HOME</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
 
 
 for x in servers:
-    # print(x)
+    hostnameFileSafe = x['hostname'].replace(".", "_")
     print('<div id="menu'+str(x['id'])+'" class="tab-pane fade"><h3>'+x['hostname']+'</h3>')
-    print('<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>')
+    print('<image src="/img/cpu_'+hostnameFileSafe+'.png"> </image>')
+    print('<p>')
+
+    queryData = (x['hostname'],)
+    c.execute('SELECT * FROM historicalData where hostname = ? order by id desc', queryData)
+    cpuData = []
+    for x2 in c.fetchall():
+        cpuData.append(x2['cpuUssage'])
+    pylab.figure()
+    pylab.plot(cpuData)
+    pylab.ylabel('CPU ussage')
+    pylab.savefig("img/cpu_"+hostnameFileSafe+".png", transparent=True)
+
+    print('</p>')
     print('</div>')
 
 
 
-
-
-
-
-# print('<table class="table table-hover">')
-# print('<tr><th>ID</th><th>timestamp</th><th>host</th><th>os</th><th>diskfree</th><th>disksize</th><th>uptime</th><th>ips</th><th>memfree</th><th>memtotal</th><th>proc count</th><th>cpu ussage</th></tr>')
-# c.execute('SELECT * FROM historicalData order by id desc')
-# for x in c.fetchall():
-#     print('<tr><td>'+str(x['id'])+'</td><td>'+x['timestamp']+'</td><td>'+x['hostname']+'</td><td>'+x['os']+'</td>')
-#     print('<td>'+str(round(float(x['diskFree'].replace(',','.'))))+'MB</td><td>'+str(round(float(x['diskSize'].replace(',','.'))))+'MB</td>')
-#     print('<td>'+x['uptime']+'</td><td>ips</td><td>'+str(round(float(x['memFree'].replace(',','.'))))+'MB</td>')
-#     print('<td>'+str(round(float(x['memTotal'].replace(',','.'))))+'MB</td><td>'+x['proccount']+'</td><td>'+x['cpuUssage']+'%</td></tr>')
 
 
 print("</div></table>")
