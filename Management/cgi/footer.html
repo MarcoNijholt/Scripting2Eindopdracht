@@ -1,7 +1,7 @@
     </div>
     <footer class="footer">
       <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
+        <p class="text-muted">© Copyright by <a href="http://twitter.com/marco282">Marco Nijholt</a>.</p>
       </div>
     </footer>
 
@@ -13,4 +13,32 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
   </body>
+    <script>
+        function downloadInnerHtml(filename, elId, mimeType) {
+            var elHtml = document.getElementById(elId).innerHTML;
+            var link = document.createElement('a');
+            mimeType = mimeType || 'text/plain';
+
+            link.setAttribute('download', filename);
+            link.setAttribute('href', 'data:' + mimeType  +  ';charset=utf-8,' + encodeURIComponent(elHtml));
+            link.click();
+        }
+
+        $("#downloadServer").click( function() {
+            console.log("works");
+            downloadInnerHtml("server_CSV_Export.csv", 'downloadServerContent','text/csv');
+        });
+
+        $("#downloadLatest").click( function() {
+            console.log("works");
+            downloadInnerHtml("latest_CSV_Export.csv", 'downloadLatestContent','text/csv');
+        });
+
+        $("#downloadTotal").click( function() {
+            console.log("works");
+            downloadInnerHtml("total_CSV_Export.csv", 'downloadTotalContent','text/csv');
+        });
+
+
+    </script>
 </html>

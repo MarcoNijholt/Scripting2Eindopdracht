@@ -4,7 +4,7 @@ cgitb.enable()
 import os
 import sqlite3
 import json
-
+import datetime
 # Send out headers
 print('Status: 200 OK')
 print('Content-type: text/html')
@@ -35,7 +35,11 @@ for x in servers:
 
 
 print('</ul><div class="tab-content"><div id="home" class="tab-pane fade in active">')
-print('<h3>HOME</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>')
+print('<h3>HOME</h3>'
+      '<p>Welcome to the management server of Marco Monitoring. '
+      'In the tabbed list above you will find a list of agents that have historical data on this managemenet server.<br>'
+      'If you are interested in a complete log of all polling, please click on the history log button in the navbar</p>')
+print('</div>')
 
 # occupy the tabbed elements with data
 for x in servers:
@@ -68,10 +72,17 @@ for x in servers:
     print('</table>')
     print('</div>')
 
+    print('<h1>Per day</h1>')
     print('<div class="col-lg-6" style="text-align:center;"><h4>CPU Usage</h4><image width="100%" src="/img/cpu_'+hostnameFileSafe+'.png"> </image></div>')
     print('<div class="col-lg-6" style="text-align:center;"><h4>Disk Usage</h4><image width="100%" src="/img/disk_'+hostnameFileSafe+'.png"> </image></div>')
     print('<div class="col-lg-6" style="text-align:center;"><h4>Memory Usage</h4><image width="100%" src="/img/mem_'+hostnameFileSafe+'.png"> </image></div>')
     print('<div class="col-lg-6" style="text-align:center;"><h4>Process Count</h4><image width="100%" src="/img/procc_'+hostnameFileSafe+'.png"> </image></div>')
+
+    print('<h1>Per Week</h1>')
+    print('<div class="col-lg-6" style="text-align:center;"><h4>CPU Usage</h4><image width="100%" src="/img/cpu_week_'+hostnameFileSafe+'.png"> </image></div>')
+    print('<div class="col-lg-6" style="text-align:center;"><h4>Disk Usage</h4><image width="100%" src="/img/disk_week_'+hostnameFileSafe+'.png"> </image></div>')
+    print('<div class="col-lg-6" style="text-align:center;"><h4>Memory Usage</h4><image width="100%" src="/img/mem_week_'+hostnameFileSafe+'.png"> </image></div>')
+    print('<div class="col-lg-6" style="text-align:center;"><h4>Process Count</h4><image width="100%" src="/img/procc_week_'+hostnameFileSafe+'.png"> </image></div>')
 
 
     queryData = (x['hostname'],)
@@ -81,46 +92,97 @@ for x in servers:
     memData = []
     diskData = []
     proccData = []
+    cpuDataWeek = []
+    memDataWeek = []
+    diskDataWeek = []
+    proccDataWeek = []
+    timeStamp = []
+    timeStampWeek = []
     for x2 in c.fetchall():
-        # populate lists
-        cpuData.append(x2['cpuUssage'])
-        proccData.append(x2['proccount'])
-        diskUssage = 100 - ((float(x2['diskFree'].replace(",",".")) / float(x2['diskSize'].replace(",","."))) * 100)
-        diskData.append(round(diskUssage))
-        memUssage = 100 - ((float(x2['memFree'].replace(",",".")) / float(x2['memTotal'].replace(",","."))) * 100)
-        #print(memUssage)
-        memData.append(round(memUssage))
+        t1 = datetime.datetime.strptime(str(datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
+        t2 = datetime.datetime.strptime(x2['timestamp'], "%Y-%m-%d %H:%M:%S")
+        delta = t1 - t2
+        if delta.seconds < 86400:
+            # populate day lists
+            cpuData.append(x2['cpuUssage'])
+            proccData.append(x2['proccount'])
+            diskUssage = 100 - ((float(x2['diskFree'].replace(",",".")) / float(x2['diskSize'].replace(",","."))) * 100)
+            diskData.append(round(diskUssage))
+            memUssage = 100 - ((float(x2['memFree'].replace(",",".")) / float(x2['memTotal'].replace(",","."))) * 100)
+
+            # populate week lists
+            memData.append(round(memUssage))
+            cpuDataWeek.append(x2['cpuUssage'])
+            proccDataWeek.append(x2['proccount'])
+            diskDataWeek.append(round(diskUssage))
+            #print(memUssage)
+            memDataWeek.append(round(memUssage))
+        elif delta.seconds < 604800:
+            # populate ONLY week lists
+            cpuDataWeek.append(x2['cpuUssage'])
+            proccDataWeek.append(x2['proccount'])
+            diskUssage = 100 - ((float(x2['diskFree'].replace(",",".")) / float(x2['diskSize'].replace(",","."))) * 100)
+            diskDataWeek.append(round(diskUssage))
+            memUssage = 100 - ((float(x2['memFree'].replace(",",".")) / float(x2['memTotal'].replace(",","."))) * 100)
+            #print(memUssage)
+            memDataWeek.append(round(memUssage))
 
     # Plot the figures with the data generated in the previous lists
+
     plt.figure()
-    plt.plot(cpuData)
+    plt.plot(cpuData[::2])
     plt.ylabel('CPU ussage %')
     plt.xlabel("Polling number")
     plt.savefig("img/cpu_"+hostnameFileSafe+".png", transparent=True)
 
     plt.figure()
-    plt.plot(diskData)
+    plt.plot(diskData[::2])
     plt.ylabel('Disk ussage %')
     plt.xlabel("Polling number")
     plt.savefig("img/disk_"+hostnameFileSafe+".png", transparent=True)
 
     plt.figure()
-    plt.plot(memData)
+    plt.plot(memData[::2])
     plt.ylabel('Memory ussage %')
     plt.xlabel("Polling number")
     plt.savefig("img/mem_"+hostnameFileSafe+".png", transparent=True)
 
     plt.figure()
-    plt.plot(proccData)
+    plt.plot(proccData[::2])
     plt.ylabel('Process Count')
     plt.xlabel("Polling number")
     plt.savefig("img/procc_"+hostnameFileSafe+".png", transparent=True)
 
+    plt.figure()
+    plt.plot(cpuDataWeek[::8])
+    plt.ylabel('CPU ussage %')
+    plt.xlabel("Polling number")
+    plt.savefig("img/cpu_week_"+hostnameFileSafe+".png", transparent=True)
+
+    plt.figure()
+    plt.plot(diskDataWeek[::8])
+    plt.ylabel('Disk ussage %')
+    plt.xlabel("Polling number")
+    plt.savefig("img/disk_week_"+hostnameFileSafe+".png", transparent=True)
+
+    plt.figure()
+    plt.plot(memDataWeek[::8])
+    plt.ylabel('Memory ussage %')
+    plt.xlabel("Polling number")
+    plt.savefig("img/mem_week_"+hostnameFileSafe+".png", transparent=True)
+
+    plt.figure()
+    plt.plot(proccDataWeek[::8])
+    plt.ylabel('Process Count')
+    plt.xlabel("Polling number")
+    plt.savefig("img/procc_week_"+hostnameFileSafe+".png", transparent=True)
+
     print('</div>')
     print('</div>')
 
-print("</div></table>")
+print("</div></div>")
 
+# Print the footer from static HTML
 with open("footer.html", "r") as f:
     print(f.read())
 

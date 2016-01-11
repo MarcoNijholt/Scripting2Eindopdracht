@@ -58,7 +58,7 @@ def getCounters(hostname, port, request):
 
     # print(countersResponse)
     if countersResponse['success']:
-        timeStamp = datetime.datetime.utcnow()
+        timeStamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         ips = json.dumps(countersResponse['response']['ips'])
         newSubInfo = (timeStamp, hostname, countersResponse['response']['os'], countersResponse['response']['disk']['free'],
                       countersResponse['response']['disk']['size'], countersResponse['response']['uptime'], ips,
@@ -83,7 +83,7 @@ try:
             request = "getAll"
             print(getCounters(hostname, port, request))
             time.sleep(2)
-        time.sleep(30)
+        time.sleep(60)
 except KeyboardInterrupt:
     pass
 
