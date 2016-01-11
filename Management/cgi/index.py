@@ -12,12 +12,27 @@ with open("navbar.html", "r") as f:
 conn = sqlite3.connect('../networkmonitoring.db')
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
-
+c.execute('SELECT * FROM servers')
+servers = c.fetchall()
 print("<h1>Servers</h1>")
 print('<ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#home">Home</a></li>')
+for x in servers:
+    print('<li><a data-toggle="tab" href="#menu'+str(x['id'])+'">'+x['hostname']+'</a></li>')
+
 
 print('</ul><div class="tab-content"><div id="home" class="tab-pane fade in active">')
 print('<h3>HOME</h3><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>')
+
+
+for x in servers:
+    # print(x)
+    print('<div id="menu'+str(x['id'])+'" class="tab-pane fade"><h3>'+x['hostname']+'</h3>')
+    print('<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>')
+    print('</div>')
+
+
+
+
 
 
 

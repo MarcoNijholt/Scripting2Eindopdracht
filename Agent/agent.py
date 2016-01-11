@@ -146,7 +146,7 @@ class ServerAgent(asyncio.Protocol):
             # convert to json string
             response = json.dumps(response)
             #send to the client
-            self.transport.write(response.encode("utf-8"))
+            self.transport.write((response + "\n").encode("utf-8"))
 
         elif osName == "nt":
             #get the powershell values

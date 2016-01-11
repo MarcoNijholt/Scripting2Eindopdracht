@@ -15,7 +15,7 @@ c = conn.cursor()
 #              (id INTEGER PRIMARY KEY, timestamp TEXT, hostname TEXT, os TEXT, diskFree TEXT, diskSize TEXT, uptime TEXT, ips TEXT, memFree TEXT, memTotal TEXT, proccount TEXT, cpuUssage TEXT)''')
 
 
-hostname = "127.0.0.1"
+hostname = "158.69.158.236"
 port = 8888
 request = "getAll"
 
@@ -69,7 +69,7 @@ def getCounters(hostname, port, request):
 try:
     while 1:
         print(getCounters(hostname, port, request))
-        time.sleep(30)
+        time.sleep(1)
 except KeyboardInterrupt:
     pass
 
