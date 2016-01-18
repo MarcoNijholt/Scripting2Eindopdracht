@@ -11,7 +11,11 @@ import logging
 logging.basicConfig(filename='agent.log',level=logging.DEBUG)
 
 # get config
-tree = ET.parse('config.xml')
+try:
+    tree = ET.parse('config.xml')
+except FileNotFoundError:
+    print("Config file does not exist, please generate one. Exiting....")
+    quit()
 serverConfig = tree.getroot()
 bindAddress = serverConfig.find("hostName").text
 authToken = serverConfig.find("authToken").text
