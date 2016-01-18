@@ -176,7 +176,11 @@ except:
     print("could not start server, port in use")
     logging.critical("COULD NOT START SERVER, PORT 8888 IN USE. PLEASE CLOSE DOWN ANY PROGRAMS THAT MIGHT USE THIS PORT")
     quit()
-server = loop.run_until_complete(coro)
+try:
+    server = loop.run_until_complete(coro)
+except OSError:
+    print("Port already in use, please close down any applications that use port 8888")
+    quit()
 
 # Serve requests until canceled
 print('Serving on {}'.format(server.sockets[0].getsockname()))
